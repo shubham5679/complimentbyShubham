@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shrutika (SARU) </title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            color: #334155;
+            padding: 20px;
+            box-sizing: border-box;
+            /* New emoji background */
+            background-image: repeating-linear-gradient(45deg,
+                #f0f4f8 0px, #f0f4f8 20px,
+                #e2e8f0 20px, #e2e8f0 40px);
+            background-size: 80px 80px;
+            /* Add some emojis as background elements */
+            position: relative;
+            overflow: hidden; /* Hide overflowing emojis */
+        }
+
+        body::before, body::after {
+            content: '💖✨🌸'; /* Emojis for the background */
+            position: absolute;
+            font-size: 5em;
+            opacity: 0.1;
+            z-index: -1; /* Send to back */
+            pointer-events: none; /* Make sure it doesn't block clicks */
+        }
+
+        body::before {
+            top: 10%;
+            left: 5%;
+            transform: rotate(-20deg);
+        }
+
+        body::after {
+            bottom: 15%;
+            right: 10%;
+            transform: rotate(30deg);
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 1rem; /* rounded-xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
+            padding: 1.5rem; /* p-6 */
+            max-width: 90%;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem; /* space-y-6 */
+        }
+        h1 {
+            font-size: 2.25rem; /* text-4xl */
+            font-weight: 700; /* font-bold */
+            color: #1e293b; /* text-slate-800 */
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        .message-box {
+            background-color: #e0f2fe; /* bg-sky-100 */
+            color: #0c4a6e; /* text-sky-800 */
+            padding: 1rem; /* p-4 */
+            border-radius: 0.5rem; /* rounded-md */
+            font-size: 0.875rem; /* text-sm */
+            line-height: 1.5;
+            text-align: center;
+            width: 100%;
+        }
+
+        /* Compliments specific styles */
+        .compliments-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px; /* Ensure enough space */
+            text-align: center;
+            width: 100%;
+        }
+        .fingerprint-touch-area {
+            width: 150px;
+            height: 150px;
+            background-color: #cbd5e1; /* slate-300 */
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: background-color 0.3s ease;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .fingerprint-touch-area:hover {
+            background-color: #94a3b8; /* slate-400 */
+        }
+        .fingerprint-icon {
+            font-size: 3rem;
+            color: #475569; /* slate-600 */
+            position: relative;
+            z-index: 1;
+        }
+        .fingerprint-animation {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: #3b82f6; /* blue-500 */
+            border-radius: 50%;
+            opacity: 0;
+            transform: scale(0);
+        }
+        .fingerprint-animation.active {
+            animation: pulse 0.7s ease-out forwards;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0); opacity: 0.8; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        .compliment-display {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-top: 1rem;
+            min-height: 80px; /* Reserve space */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .compliment-display.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .sticker {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        .next-button {
+            background-color: #3b82f6; /* blue-500 */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            margin-top: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .next-button:hover {
+            background-color: #2563eb; /* blue-600 */
+            transform: translateY(-1px);
+        }
+        .next-button:active {
+            transform: translateY(1px);
+        }
+
+        .saru-message {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ec4899; /* pink-500 */
+            margin-top: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.2;
+            opacity: 0;
+            /* Initial position for animation */
+            transform: translateY(20px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .saru-message.visible {
+            opacity: 1;
+            /* Final position: slightly upwards */
+            transform: translateY(-10px);
+        }
+        .saru-flowers {
+            font-size: 3rem;
+            margin-top: 1rem;
+            display: flex;
+            gap: 1rem;
+        }
+        .thank-you-text {
+            font-size: 1.25rem;
+            color: #475569;
+            margin-top: 1rem;
+            font-style: italic;
+        }
+
+        /* Footer styles */
+        footer {
+            margin-top: auto; /* Pushes footer to the bottom */
+            padding-top: 2rem;
+            text-align: center;
+            font-size: 0.875rem; /* text-sm */
+            color: #64748b; /* slate-500 */
+        }
+        footer p {
+            margin: 0;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 640px) {
+            h1 {
+                font-size: 1.75rem;
+            }
+            .compliment-display {
+                font-size: 1.25rem;
+            }
+            .sticker {
+                font-size: 2.5rem;
+            }
+            .saru-message {
+                font-size: 1.5rem;
+            }
+            .saru-flowers {
+                font-size: 2.5rem;
+            }
+            .thank-you-text {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌺 For Shrutika...(SARU) 🌸</h1>
+        <div class="message-box">
+            Tap the circle below to receive a compliment!
+        </div>
+        <div class="compliments-area">
+            <div class="fingerprint-touch-area" id="fingerprintArea">
+                <span class="fingerprint-icon">👆</span>
+                <div class="fingerprint-animation" id="fingerprintAnimation"></div>
+            </div>
+
+            <div class="compliment-display" id="complimentDisplay">
+                <span class="sticker" id="complimentSticker"></span>
+                <p id="complimentText"></p>
+            </div>
+
+            <button class="next-button hidden" id="nextComplimentButton">Next Compliment</button>
+
+            <div class="saru-message hidden" id="saruMessage">
+                <p>Shrutika (SARU)</p>
+                <div class="saru-flowers">
+                    <span>🌺</span><span>🌸</span><span>🌼</span>
+                </div>
+                <p class="thank-you-text">Thank you for becoming my friend!</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; Developed by Shubham <span style="font-size: 1.2em;">🐾</span>. All rights reserved.</p>
+    </footer>
+
+    <script type="module">
+        const compliments = [
+            { text: "You're absolutely brilliant!", sticker: "✨" },
+            { text: "Your kindness shines through!", sticker: "💖" },
+            { text: "You make the world a better place!", sticker: "🌟" },
+            { text: "Simply amazing!", sticker: "😊" },
+            { text: "So glad to have you!", sticker: "🌸" },
+            { text: "Your positivity is infectious!", sticker: "☀️" },
+            { text: "You inspire those around you!", sticker: "💡" },
+            { text: "What a wonderful friend you are!", sticker: "🌈" }
+        ];
+
+        const fingerprintArea = document.getElementById('fingerprintArea');
+        const fingerprintAnimation = document.getElementById('fingerprintAnimation');
+        const complimentDisplay = document.getElementById('complimentDisplay');
+        const complimentSticker = document.getElementById('complimentSticker');
+        const complimentText = document.getElementById('complimentText');
+        const nextComplimentButton = document.getElementById('nextComplimentButton');
+        const saruMessage = document.getElementById('saruMessage');
+
+        let currentComplimentIndex = 0;
+        let hasTappedFingerprint = false;
+
+        function showCompliment(index) {
+            if (index < compliments.length) {
+                const comp = compliments[index];
+                complimentSticker.textContent = comp.sticker;
+                complimentText.textContent = comp.text;
+                complimentDisplay.classList.add('visible');
+                nextComplimentButton.classList.remove('hidden');
+            } else {
+                // Show SARU message
+                complimentDisplay.classList.remove('visible');
+                nextComplimentButton.classList.add('hidden');
+                saruMessage.classList.remove('hidden');
+                // Animate in with a slight upward movement
+                setTimeout(() => saruMessage.classList.add('visible'), 100);
+            }
+        }
+
+        fingerprintArea.addEventListener('click', () => {
+            if (!hasTappedFingerprint) {
+                fingerprintAnimation.classList.add('active');
+                fingerprintArea.style.cursor = 'default'; // Disable further taps on fingerprint area
+                fingerprintArea.querySelector('.fingerprint-icon').style.opacity = '0'; // Hide icon
+
+                setTimeout(() => {
+                    fingerprintAnimation.classList.remove('active');
+                    fingerprintArea.classList.add('hidden'); // Hide fingerprint area after animation
+                    hasTappedFingerprint = true;
+                    showCompliment(currentComplimentIndex);
+                }, 700); // Match animation duration
+            }
+        });
+
+        nextComplimentButton.addEventListener('click', () => {
+            if (nextComplimentButton.classList.contains('hidden')) {
+                return; // Do nothing if button is hidden (i.e., SARU message is showing)
+            }
+
+            currentComplimentIndex++;
+            complimentDisplay.classList.remove('visible'); // Fade out current compliment
+
+            // Delay showing the next compliment
+            setTimeout(() => {
+                // If we've reached the end of compliments, show the SARU message
+                if (currentComplimentIndex < compliments.length) {
+                    showCompliment(currentComplimentIndex);
+                } else {
+                    showCompliment(currentComplimentIndex); // This will trigger the SARU message
+                }
+            }, 500); // This delay allows for a brief pause
+        });
+    </script>
+</body>
+</html>
